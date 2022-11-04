@@ -3,40 +3,40 @@
 #include<stdio.h>
 #include<math.h>
 
-//int main()
-//{
-//	int n = 0, b = 0;
-//	scanf("%d", &n);
-//
-//	for (int x = 1; x <= 20; x++)
-//	{
-//
-//		for (int y = 1; y <= 33; y++)
-//		{
-//
-//			for (int z = 3; z <= 300; z = z + 3)
-//			{
-//
-//				if (x + y + z == 100 && 5 * x + 3 * y + z / 3 == 100)
-//				{
-//
-//					if (b < n)
-//					{
-//						printf("%d %d %d", x, y, z);
-//						printf("\n");
-//						b = b + 1;
-//					}
-//
-//				}
-//
-//			}
-//
-//		}
-//
-//	}
-//
-//	return 0;
-//}
+int main()
+{
+	int n = 0, b = 0;
+	scanf("%d", &n);
+
+	for (int x = 1; x <= 20; x++)
+	{
+
+		for (int y = 1; y <= 33; y++)
+		{
+
+			for (int z = 3; z <= 300; z = z + 3)
+			{
+
+				if (x + y + z == 100 && 5 * x + 3 * y + z / 3 == 100)
+				{
+
+					if (b < n)
+					{
+						printf("%d %d %d", x, y, z);
+						printf("\n");
+						b = b + 1;
+					}
+
+				}
+
+			}
+
+		}
+
+	}
+
+	return 0;
+}
 
 //int is_primer(int m)
 //{
