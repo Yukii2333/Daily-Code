@@ -2,11 +2,133 @@
 
 #include <stdio.h>
 
+void print(int arr[], int n)
+{
+	for (int i = 0; i < n; i++)
+	{
+		if (i < n - 1)
+		{
+			printf("%d ", arr[i]);
+		}
+		else
+		{
+			printf("%d\n", arr[i]);
+		}
+
+	}
+
+}
+
+void sort(int arr[], int n)
+{
+
+	for (int i = 0; i < n - 1; i++)
+	{
+		for (int j = 0; j < n - 1 - i; j++)
+		{
+			if (arr[j] < arr[j + 1])
+			{
+				int tmp = arr[j];
+				arr[j] = arr[j + 1];
+				arr[j + 1] = tmp;
+			}
+		}
+	}
+
+}
+
 int main()
 {
 	int arr[10] = { 0 };
+	int n = 0;
+	scanf("%d", &n);
+
+	for (int i = 0; i < n; i++)
+	{
+		scanf("%d", &arr[i]);
+	}
+
+	sort(arr, n);
+	print(arr, n);
 	return 0;
 }
+
+//int main()
+//{
+//    int a[1010] = { 0 };
+//    int i, n, c = 0;
+//    while (scanf("%d", &n), n >= 0)
+//    {
+//        a[n]++;
+//    }
+//    for (n = 100; n >= 0; n--)
+//    {
+//        if (c == 3)
+//            break;
+//        if (a[n] > 0)
+//        {
+//            while (a[n] > 0)
+//            {
+//                if (c == 3)
+//                    break;
+//                if (c == 0)
+//                    printf("%d", n);
+//                else
+//                    printf(" %d", n);
+//                c++;
+//                a[n]--;
+//            }
+//        }
+//    }
+//    while (c < 3)
+//    {
+//        if (c == 0)
+//            printf("#");
+//        else
+//            printf(" #");
+//        c++;
+//    }
+//    printf("\n");
+//    return 0;
+//}
+
+//void print(int arr[], int sz)//Ã°ÅÝÅÅÐò
+//{
+//	for (int i = 0; i < sz; i++)
+//	{
+//		printf("%d ",arr[i]);
+//	}
+//
+//	printf("\n");
+//}
+//
+//void sort(int arr[], int sz)
+//{
+//
+//	for (int i = 0; i < sz - 1; i++)
+//	{
+//		for (int j = 0; j < sz - 1 - i; j++)
+//		{
+//			if (arr[j] > arr[j + 1])
+//			{
+//				int tmp = arr[j];
+//				arr[j] = arr[j + 1];
+//				arr[j + 1] = tmp;
+//			}
+//		}
+//
+//		print(arr, sz);
+//	}
+//	
+//}
+//
+//int main()
+//{
+//	int arr[] = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+//	int sz = sizeof(arr) / sizeof(arr[0]);
+//	sort(arr, sz);
+//	return 0;
+//}
 
 //int number(int z)//Êý¼¦µ°
 //{
