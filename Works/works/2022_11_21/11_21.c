@@ -4,19 +4,19 @@
 #include <string.h>
 #include <math.h>
 
-int main()
-{
-	int a = 0;
-	int n = 0;
-	int Sn = 0;
-	scanf("%d %d", &a, &n);
-	for (int i = 0; i < n; i++)
-	{
-		Sn += (a * pow(a, i));
-	}
-	printf("%d\n", Sn);
-	return 0;
-}
+//int main()
+//{
+//	int a = 0;
+//	int n = 0;
+//	int Sn = 0;
+//	scanf("%d %d", &a, &n);
+//	for (int i = 0; i < n; i++)
+//	{
+//		Sn += (a * pow(a, i));
+//	}
+//	printf("%d\n", Sn);
+//	return 0;
+//}
 
 //int is_daffodil_number(int i)
 //{
