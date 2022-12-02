@@ -1,38 +1,38 @@
-#define _CRT_SECURE_NO_WARNINGS 1
-
-#include <stdio.h>
-#include <assert.h>
-
-int get_max(int* arr, const int max, int cmax)
-{
-	assert(arr != NULL);
-	cmax = *arr;
-	int i = 0;
-	for (i = 0; i < 10; i++)
-	{
-		if (*(arr + i) > cmax && *(arr + i) != max)
-		{
-			cmax = *(arr + i);
-		}
-	}
-	return cmax;
-}
-
-int main()
-{
-	int max = 0;
-	int cmax = 0;
-	int arr[10] = { 0 };
-	int i = 0;
-	for (i = 0; i < 10; i++)
-	{
-		scanf("%d", &arr[i]);
-	}
-	max = get_max(arr, max, max);
-	cmax = get_max(arr, max, cmax);
-	printf("max=%d,cmax=%d\n", max, cmax);
-	return 0;
-}
+//#define _CRT_SECURE_NO_WARNINGS 1
+//
+//#include <stdio.h>
+//#include <assert.h>
+//
+//int get_max(int* arr, const int max, int cmax)
+//{
+//	assert(arr != NULL);
+//	cmax = *arr;
+//	int i = 0;
+//	for (i = 0; i < 10; i++)
+//	{
+//		if (*(arr + i) > cmax && *(arr + i) != max)
+//		{
+//			cmax = *(arr + i);
+//		}
+//	}
+//	return cmax;
+//}
+//
+//int main()
+//{
+//	int max = 0;
+//	int cmax = 0;
+//	int arr[10] = { 0 };
+//	int i = 0;
+//	for (i = 0; i < 10; i++)
+//	{
+//		scanf("%d", &arr[i]);
+//	}
+//	max = get_max(arr, max, max);
+//	cmax = get_max(arr, max, cmax);
+//	printf("max=%d,cmax=%d\n", max, cmax);
+//	return 0;
+//}
 
 //int main()
 //{
