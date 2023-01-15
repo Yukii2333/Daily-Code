@@ -50,6 +50,7 @@ int main()
 			break;
 		case 0://ÍË³ö
 			system("cls");
+			destroy_contact(&con);
 			printf("ÒÑÍË³ö\n");
 			break;
 		default:

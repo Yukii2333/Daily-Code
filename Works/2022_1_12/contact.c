@@ -28,21 +28,47 @@ int search_by_name(const Contact* pc, const char* pb)
 	}
 }
 
-void init_contact(Contact* pc)
+void check_capacity(Contact* pc)
+{
+	if (pc->sz == pc->capacity)
+	{
+		PeoInfo* ptr = realloc(pc->data, (pc->capacity + INC_NUM) * sizeof(PeoInfo));
+		if (ptr == NULL)
+		{
+			perror("check_capacity::realloc");
+			return;
+		}
+		pc->data = ptr;
+		pc->capacity += INC_NUM;
+		printf("已扩容\n");
+	}
+}
+
+void init_contact(Contact* pc)//动态
 {
 	assert(pc);
 	pc->sz = 0;
-	memset(pc->data, 0, sizeof(pc->data));
+	PeoInfo* ptr = (PeoInfo*)calloc(CAP_NUM, sizeof(PeoInfo));
+	if (ptr == NULL)
+	{
+		perror("init_contact::calloc");
+		return;
+	}
+	pc->data = ptr;
+	pc->capacity = CAP_NUM;
 }
+
+//void init_contact(Contact* pc)//静态
+//{
+//	assert(pc);
+//	pc->sz = 0;
+//	memset(pc->data, 0, sizeof(pc->data));
+//}
 
 void add_contact(Contact* pc)
 {
 	assert(pc);
-	if (pc->sz == DATA_NUM)
-	{
-		printf("通讯录满，无法添加\n");
-		return;
-	}
+	check_capacity(pc);
 	printf("请输入名字：");
 	scanf("%s", pc->data[pc->sz].name);
 	printf("请输入年龄：");
@@ -55,6 +81,27 @@ void add_contact(Contact* pc)
 	scanf("%s", pc->data[pc->sz].tele);
 	pc->sz++;
 }
+
+//void add_contact(Contact* pc)
+//{
+//	assert(pc);
+//	if (pc->sz == DATA_NUM)
+//	{
+//		printf("通讯录满，无法添加\n");
+//		return;
+//	}
+//	printf("请输入名字：");
+//	scanf("%s", pc->data[pc->sz].name);
+//	printf("请输入年龄：");
+//	scanf("%d", &(pc->data[pc->sz].age));
+//	printf("请输入性别：");
+//	scanf("%s", pc->data[pc->sz].sex);
+//	printf("请输入地址：");
+//	scanf("%s", pc->data[pc->sz].addr);
+//	printf("请输入电话：");
+//	scanf("%s", pc->data[pc->sz].tele);
+//	pc->sz++;
+//}
 
 void show_contact(const Contact* pc)
 {
@@ -168,4 +215,12 @@ void sort_contact(Contact* pc)
 {
 	qsort(pc->data, pc->sz, sizeof(pc->data[0]), cmp_by_age);
 	printf("排序完成\n");
+}
+
+void destroy_contact(Contact* pc)
+{
+	free(pc->data);
+	pc->data = NULL;
+	pc->capacity = 0;
+	pc->sz = 0;
 }

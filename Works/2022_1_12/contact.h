@@ -4,12 +4,15 @@
 #include <windows.h>
 #include <string.h>
 #include <assert.h>
+#include <stdlib.h>
 
 #define DATA_NUM 1000
 #define NAME_NUM 20
 #define SEX_NUM 5
 #define ADDR_NUM 30
 #define TELE_NUM 12
+#define CAP_NUM 3
+#define INC_NUM 1
 
 typedef struct PeoInfo
 {
@@ -23,8 +26,9 @@ typedef struct PeoInfo
 
 typedef struct Contact
 {
-	PeoInfo data[DATA_NUM];
+	PeoInfo* data;
 	int sz;
+	int capacity;
 }Contact;
 
 void init_contact(Contact* pc);//≥ı ºªØ
@@ -42,3 +46,7 @@ void search_contact(const Contact* pc);//≤È’“
 void modify_contact(Contact* pc);//±‡º≠
 
 void sort_contact(Contact* pc);//≈≈–Ú
+
+void check_capacity(Contact* pc);
+
+void destroy_contact(Contact* pc);
