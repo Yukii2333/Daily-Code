@@ -24,7 +24,7 @@ int search_by_name(const Contact* pc, const char* pb)
 	}
 	else
 	{
-		return 0;
+		return -1;
 	}
 }
 
@@ -44,6 +44,28 @@ void check_capacity(Contact* pc)
 	}
 }
 
+void load_contact(Contact* pc)
+{
+	FILE* pf = fopen("contact.txt", "rb");
+	if (pf == NULL)
+	{
+		perror("load_contact::fopen");
+		return;
+	}
+	PeoInfo tmp = { 0 };
+	int i = 0;
+	while (fread(&tmp, sizeof(PeoInfo), 1, pf))
+	{
+		check_capacity(pc);
+		pc->data[i] = tmp;
+		pc->sz++;
+		i++;
+	}
+	printf("加载通讯录成功\n");
+	fclose(pf);
+	pf = NULL; 
+}
+
 void init_contact(Contact* pc)//动态
 {
 	assert(pc);
@@ -56,6 +78,7 @@ void init_contact(Contact* pc)//动态
 	}
 	pc->data = ptr;
 	pc->capacity = CAP_NUM;
+	load_contact(pc);
 }
 
 //void init_contact(Contact* pc)//静态
@@ -130,14 +153,14 @@ void del_contact(Contact* pc)
 	scanf("%s", name);
 	int i = 0;
 	int del = search_by_name(pc, name);
-	if (del != 0)
+	if (del != -1)
 	{
 		printf("已找到，是否确认删除？1.Y  any.N\n");
 		int set = 0;
 		scanf("%d", set);
 		if (set == 1)//实质是用末尾覆盖目标然后总数减一来实现删除
 		{
-			pc->data[del] = pc->data[pc->sz];
+			pc->data[del] = pc->data[pc->sz-1];
 			pc->sz--;
 			printf("已删除\n");
 		}
@@ -161,7 +184,7 @@ void search_contact(const Contact* pc)
 	printf("请输入姓名：");
 	scanf("%s", name);
 	int ret = search_by_name(pc, name);
-	if (ret != 0)
+	if (ret != -1)
 	{
 		printf("找到了\n");
 		printf("%-20s\t%-4s\t%-5s\t%-20s\t%-12s\n", "名字", "年龄", "性别", "地址", "电话");
@@ -184,7 +207,7 @@ void modify_contact(Contact* pc)
 	char name[20] = { 0 };
 	printf("请输入姓名：");
 	int ret = search_by_name(pc, name);
-	if (ret == 0)
+	if (ret == -1)
 	{
 		printf("未找到，请确认姓名是否正确");
 		return;
@@ -215,6 +238,24 @@ void sort_contact(Contact* pc)
 {
 	qsort(pc->data, pc->sz, sizeof(pc->data[0]), cmp_by_age);
 	printf("排序完成\n");
+}
+
+void save_contact(Contact* pc)
+{
+	FILE* pf = fopen("contact.txt", "wb");
+	if (pf == NULL)//判断是否打开成功
+	{
+		perror("save_contact::fopen");
+		return;
+	}
+	int i = 0;
+	for (i = 0; i < pc->sz; i++)
+	{
+		fwrite(pc->data + i, sizeof(PeoInfo), 1, pf);
+	}
+	printf("保存成功\n");
+	fclose(pf);
+	pf = NULL;
 }
 
 void destroy_contact(Contact* pc)

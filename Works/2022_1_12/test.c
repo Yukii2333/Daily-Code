@@ -50,6 +50,7 @@ int main()
 			break;
 		case 0://退出
 			system("cls");
+			save_contact(&con);//保存通讯录到磁盘
 			destroy_contact(&con);
 			printf("已退出\n");
 			break;

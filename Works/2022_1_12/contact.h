@@ -50,3 +50,7 @@ void sort_contact(Contact* pc);//≈≈–Ú
 void check_capacity(Contact* pc);
 
 void destroy_contact(Contact* pc);
+
+void save_contact(Contact* pc);
+
+void load_contact(Contact* pc);
