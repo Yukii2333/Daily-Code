@@ -10,7 +10,7 @@ bool STEmpty(ST* ps)
 
 void STInit(ST* ps)
 {
-	ST* a = (STDataType*)malloc(sizeof(STDataType) * 4);
+	STDataType* a = (STDataType*)malloc(sizeof(STDataType) * 4);
 	if (!a)
 	{
 		perror("malloc fail");
@@ -26,7 +26,7 @@ void STPush(ST* ps, STDataType x)
 	assert(ps);
 	if (ps->top == ps->capacity)
 	{
-		ST* a = (STDataType*)realloc(ps->a, sizeof(STDataType) * ps->capacity * 2);
+		STDataType* a = (STDataType*)realloc(ps->a, sizeof(STDataType) * ps->capacity * 2);
 		if (!a)
 		{
 			perror("malloc fail");
