@@ -11,7 +11,7 @@ bool STEmpty(ST* ps)
 void STInit(ST* ps)
 {
 	STDataType* a = (STDataType*)malloc(sizeof(STDataType) * 4);
-	if (a != NULL)
+	if (a == NULL)
 	{
 		perror("malloc fail");
 		return;
