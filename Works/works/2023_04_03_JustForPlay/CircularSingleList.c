@@ -135,7 +135,8 @@ int CSListSize(CSLTNode* Guard)
 }
 
 //指定位置删除（位置规则跟查找一样）
-void CSListPosPop(CSLTNode* Guard, int pos)
+//返回删除的值
+CSLTDataType CSListPosPop(CSLTNode* Guard, int pos)
 {
 	assert(Guard);
 	assert(!CSListEmpty(Guard));
@@ -148,5 +149,7 @@ void CSListPosPop(CSLTNode* Guard, int pos)
 	}
 	CSLTNode* tmp = cur->next;
 	cur->next = tmp->next;
+	CSLTDataType ret = tmp->data;
 	free(tmp);
+	return ret;
 }

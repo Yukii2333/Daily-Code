@@ -19,7 +19,7 @@ void test()
 	CSListPopBack(&Guard);
 	CSListPrint(&Guard);
 	int ret = CSListFind(&Guard, 0);
-	CSListPosPop(&Guard, ret);
+	printf("%d\n", CSListPosPop(&Guard, ret));
 	CSListPrint(&Guard);
 
 	printf("%d\n", CSListSize(&Guard));

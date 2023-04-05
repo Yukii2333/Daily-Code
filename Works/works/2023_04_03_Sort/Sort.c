@@ -101,30 +101,213 @@ void BubbleSort(int* a, int n)
 	}
 }
 
+//三数取中
+int GrtMidNum(int* a, int left, int right)
+{
+	int mid_i = (left + right) / 2;
+	if (a[left] > a[right])
+	{
+		if (a[mid_i] > a[left])
+		{
+			return left;
+		}
+		else if (a[mid_i]<a[right])
+		{
+			return right;
+		}
+		else
+		{
+			return mid_i;
+		}
+	}
+	else
+	{
+		if (a[mid_i] > a[right])
+		{
+			return right;
+		}
+		else if (a[mid_i] < a[left])
+		{
+			return left;
+		}
+		else
+		{
+			return mid_i;
+		}
+	}
+}
+
 //递归快速排序
+void QuickSort1(int* a, int left, int right)
+{
+	if (left >= right)
+	{
+		return;
+	}
+
+	//这种key_i对于有序排序时间复杂度较高
+	//int key_i = left;
+
+	//随机选key_y,在一定程度上能解决问题
+	//int rand_i = left + (rand() % (right - left));
+	//Swap(&a[left], &a[rand_i]);
+
+	//三数取中，相比随机更能解决问题
+	int mid_i = GrtMidNum(a, left, right);
+	if (mid_i != left)
+	{
+		Swap(&a[left], &a[mid_i]);
+	}
+
+	int key_i = left;
+	int began = left;
+	int end = right;
+	while (left<right)
+	{
+		while (left < right && a[right] >= a[key_i])
+		{
+			--right;
+		}
+		while (left < right && a[left] <= a[key_i])
+		{
+			++left;
+		}
+		Swap(&a[left], &a[right]);
+	}
+	Swap(&a[key_i], &a[left]);
+	//此时left和right指向的位置相同，且是key的正确位置，因此不用考虑
+	key_i = left;
+	QuickSort1(a, began, key_i - 1);
+	QuickSort1(a, key_i + 1, end);
+}
+
+//快排，递归挖坑法
+void QuickSort2(int* a, int left, int right)
+{
+	if (left >= right)
+	{
+		return;
+	}
+	int mid_i = GrtMidNum(a, left, right);
+	if (mid_i != left)
+	{
+		Swap(&a[left], &a[mid_i]);
+	}
+	int key = a[left];
+	int hole = left;
+	int began = left;
+	int end = right;
+	while (left < right)
+	{
+		while (left < right && a[right] >= key)
+		{
+			--right;
+		}
+		a[hole] = a[right];
+		hole = right;
+		while (left < right && a[left] <= key)
+		{
+			++left;
+		}
+		a[hole] = a[left];
+		hole = left;
+	}
+	a[hole] = key;
+	QuickSort2(a, began, hole - 1);
+	QuickSort2(a, hole + 1, end);
+}
+
+//前两种递归模块化
+int PartSort1(int* a, int left, int right)
+{
+	int mid_i = GrtMidNum(a, left, right);
+	if (mid_i != left)
+	{
+		Swap(&a[left], &a[mid_i]);
+	}
+	int key_i = left;
+	int began = left;
+	int end = right;
+	while (left < right)
+	{
+		while (left < right && a[right] >= a[key_i])
+		{
+			--right;
+		}
+		while (left < right && a[left] <= a[key_i])
+		{
+			++left;
+		}
+		Swap(&a[left], &a[right]);
+	}
+	Swap(&a[key_i], &a[left]);
+	key_i = left;
+	return key_i;
+}
+
+int PartSort2(int* a, int left, int right)
+{
+	int mid_i = GrtMidNum(a, left, right);
+	if (mid_i != left)
+	{
+		Swap(&a[left], &a[mid_i]);
+	}
+	int key = a[left];
+	int hole = left;
+	int began = left;
+	int end = right;
+	while (left < right)
+	{
+		while (left < right && a[right] >= key)
+		{
+			--right;
+		}
+		a[hole] = a[right];
+		hole = right;
+		while (left < right && a[left] <= key)
+		{
+			++left;
+		}
+		a[hole] = a[left];
+		hole = left;
+	}
+	a[hole] = key;
+	return hole;
+}
+
+//双指针法
+//cur找到比key小的值，先++prev然后交换cur与prev处的值，再++cur
+//cur找到比key大的值，++cur
+int PartSort3(int* a, int left, int right)
+{
+	int mid_i = GrtMidNum(a, left, right);
+	if (mid_i != left)
+	{
+		Swap(&a[left], &a[mid_i]);
+	}
+	int key_i = left;
+	int cur = left;
+	int prev = cur;
+	while (cur <= right)
+	{
+		if (a[cur] < a[key_i] && prev++ != cur)
+		{
+			Swap(&a[cur], &a[prev]);
+		}
+		++cur;
+	}
+	Swap(&a[key_i], &a[prev]);
+	key_i = prev;
+	return key_i;
+}
+
 void QuickSort(int* a, int left, int right)
 {
 	if (left >= right)
 	{
 		return;
 	}
-	int key = left;
-	int began = left;
-	int end = right;
-	while (left<right)
-	{
-		while (left < right && a[right] >= a[key])
-		{
-			--right;
-		}
-		while (left < right && a[left] <= a[key])
-		{
-			++left;
-		}
-		Swap(&a[left], &a[right]);
-	}
-	Swap(&a[key], &a[left]);
-	//此时left和right指向的位置相同，且是key的正确位置，因此不用考虑
-	QuickSort(a, began, left - 1);
-	QuickSort(a, right + 1, end);
+	int key = PartSort3(a, left, right);
+	QuickSort(a, left, key - 1);
+	QuickSort(a, key + 1, right);
 }

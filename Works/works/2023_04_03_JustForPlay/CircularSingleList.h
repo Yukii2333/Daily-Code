@@ -43,7 +43,7 @@ int CSListSize(CSLTNode* Guard);
 int CSListFind(CSLTNode* Guard, CSLTDataType n);
 
 //指定位置删除（位置规则跟查找一样）
-void CSListPosPop(CSLTNode* Guard, int pos);
+CSLTDataType CSListPosPop(CSLTNode* Guard, int pos);
 
 //打印
 void CSListPrint(CSLTNode* Guard);
