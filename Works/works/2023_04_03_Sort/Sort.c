@@ -9,7 +9,7 @@ void Swap(int* p1, int* p2)
 
 
 //选择排序
-//时间复杂度O(N)
+//时间复杂度O(N^2)
 void SelectSort(int* a, int n)
 {
 	int left = 0;
