@@ -1,29 +1,27 @@
 #include"CircularSingleList.h"
+#include"SLT.h"
 
 void test()
 {
 	CSLTNode Guard;
+	SLTNode* SLT = NULL;
 	CSListInit(&Guard);
-	CSListPushFront(&Guard, 1);
-	CSListPushFront(&Guard, 2);
-	CSListPushFront(&Guard, 3);
-	CSListPushFront(&Guard, 4);
-	CSListPushFront(&Guard, 5);
-	CSListPopFront(&Guard);
-	CSListPopFront(&Guard);
 	CSListPushBack(&Guard, 0);
 	CSListPushBack(&Guard, 1);
 	CSListPushBack(&Guard, 2);
 	CSListPushBack(&Guard, 3);
-	CSListPopBack(&Guard);
-	CSListPopBack(&Guard);
+	CSListPushBack(&Guard, 4);
+	CSListPushBack(&Guard, 5);
+	CSListPushBack(&Guard, 6);
 	CSListPrint(&Guard);
-	int ret = CSListFind(&Guard, 0);
-	printf("%d\n", CSListPosPop(&Guard, ret));
-	CSListPrint(&Guard);
-
 	printf("%d\n", CSListSize(&Guard));
-
+	while (CSListSize(&Guard)>1)
+	{
+		SLTPushBack(&SLT, CSListPosPop2(&Guard,7));
+	}
+	SLTPrint(SLT);
+	printf("last number:");
+	CSListPrint(&Guard);
 	CSListDestroy(&Guard);
 }
 

@@ -5,28 +5,30 @@ void CSListInit(CSLTNode* Guard)
 {
 	assert(Guard);
 	Guard->data = 0;
-	Guard->next = Guard;
+	Guard->next = NULL;
 }
 
 //判空
 bool CSListEmpty(CSLTNode* Guard)
 {
 	assert(Guard);
-	return Guard->next == Guard;
+	return Guard->next == NULL;
 }
 
 //销毁，最后指针置空需要自己操作
 void CSListDestroy(CSLTNode* Guard)
 {
 	assert(Guard);
-	CSLTNode* cur = Guard->next;
-	while (cur != Guard)
+	assert(!CSListEmpty(Guard));
+	CSLTNode* cur = Guard->next->next;
+	while (cur != Guard->next)
 	{
 		CSLTNode* tmp = cur;
 		cur = cur->next;
 		free(tmp);
 	}
-	cur->next = NULL;
+	free(Guard->next);
+	Guard->next = NULL;
 }
 
 //头插
@@ -40,21 +42,40 @@ void CSListPushFront(CSLTNode* Guard, CSLTDataType x)
 		return;
 	}
 	newnode->data = x;
-	newnode->next = Guard->next;
-	Guard->next = newnode;
+	newnode->next = NULL;
+	if (Guard->next == NULL)
+	{
+		Guard->next = newnode;
+		newnode->next = newnode;
+	}
+	else
+	{
+		CSLTNode* tail = Guard->next;
+		while (tail->next != Guard->next)
+		{
+			tail = tail->next;
+		}
+		tail->next = newnode;
+		newnode->next = Guard->next;
+		Guard->next = newnode;
+	}
 }
 
 //打印
 void CSListPrint(CSLTNode* Guard)
 {
 	assert(Guard);
+	if (Guard->next == NULL)
+	{
+		return;
+	}
 	CSLTNode* cur = Guard->next;
-	while (cur != Guard)
+	while (cur->next != Guard->next)
 	{
 		printf("%d ", cur->data);
 		cur = cur->next;
 	}
-	printf("\n");
+	printf("%d \n", cur->data);
 }
 
 //头删
@@ -63,7 +84,20 @@ void CSListPopFront(CSLTNode* Guard)
 	assert(Guard);
 	assert(!CSListEmpty(Guard));
 	CSLTNode* cur = Guard->next;
-	Guard->next = cur->next;
+	if (cur->next == cur)
+	{
+		Guard->next = NULL;
+	}
+	else
+	{
+		CSLTNode* tail = Guard->next;
+		while (tail->next != cur)
+		{
+			tail = tail->next;
+		}
+		tail->next = cur->next;
+		Guard->next = cur->next;
+	}
 	free(cur);
 }
 
@@ -80,12 +114,20 @@ void CSListPushBack(CSLTNode* Guard, CSLTDataType x)
 	newnode->data = x;
 	newnode->next = NULL;
 	CSLTNode* tail = Guard->next;
-	while (tail->next != Guard)
+	if (tail == NULL)
 	{
-		tail = tail->next;
+		Guard->next = newnode;
+		newnode->next = newnode;
 	}
-	newnode->next = tail->next;
-	tail->next = newnode;
+	else
+	{
+		while (tail->next != Guard->next)
+		{
+			tail = tail->next;
+		}
+		newnode->next = tail->next;
+		tail->next = newnode;
+	}
 }
 
 //尾删
@@ -94,21 +136,34 @@ void CSListPopBack(CSLTNode* Guard)
 	assert(Guard);
 	assert(!CSListEmpty(Guard));
 	CSLTNode* tail = Guard->next;
-	while (tail->next->next != Guard)
+	if (tail->next == tail)
 	{
-		tail = tail->next;
+		free(tail);
+		Guard->next = NULL;
 	}
-	free(tail->next);
-	tail->next = Guard;
+	else
+	{
+		while (tail->next->next != Guard->next)
+		{
+			tail = tail->next;
+		}
+		free(tail->next);
+		tail->next = Guard->next;
+	}
 }
 
-//查找,返回相对位置（Guard为0位置）
+//查找,返回相对位置
 int CSListFind(CSLTNode* Guard, CSLTDataType n)
 {
 	assert(Guard);
+	assert(!CSListEmpty(Guard));
 	CSLTNode* cur = Guard->next;
 	int pos = 1;
-	while (cur != Guard)
+	if (cur->next == cur && cur->data == n)
+	{
+		return pos;
+	}
+	while (cur->next != Guard->next)
 	{
 		if (cur->data == n)
 		{
@@ -124,9 +179,13 @@ int CSListFind(CSLTNode* Guard, CSLTDataType n)
 int CSListSize(CSLTNode* Guard)
 {
 	assert(Guard);
-	int size = 0;
+	if (Guard->next == NULL)
+	{
+		return 0;
+	}
+	int size = 1;
 	CSLTNode* cur = Guard->next;
-	while (cur != Guard)
+	while (cur->next != Guard->next)
 	{
 		++size;
 		cur = cur->next;
@@ -143,12 +202,63 @@ CSLTDataType CSListPosPop(CSLTNode* Guard, int pos)
 	int size = CSListSize(Guard);
 	assert(pos <= size && pos > 0);
 	CSLTNode* cur = Guard;
+	CSLTNode* tail = Guard->next;
+	if (pos == 1)
+	{
+		while (tail->next != Guard->next)
+		{
+			tail = tail->next;
+		}
+		tail->next = cur->next->next;
+	}
 	while (--pos)
 	{
 		cur = cur->next;
 	}
 	CSLTNode* tmp = cur->next;
-	cur->next = tmp->next;
+	if (size == 1)
+	{
+		cur->next = NULL;
+	}
+	else
+	{
+		cur->next = tmp->next;
+	}
+	CSLTDataType ret = tmp->data;
+	free(tmp);
+	return ret;
+}
+
+CSLTDataType CSListPosPop2(CSLTNode* Guard, int pos)
+{
+	assert(Guard);
+	assert(!CSListEmpty(Guard));
+	int size = CSListSize(Guard);
+	assert(pos > 0);
+	CSLTNode* cur = Guard;
+	CSLTNode* tail = Guard->next;
+	if (pos == 1)
+	{
+		while (tail->next != Guard->next)
+		{
+			tail = tail->next;
+		}
+		tail->next = cur->next->next;
+	}
+	while (--pos)
+	{
+		cur = cur->next;
+	}
+	CSLTNode* tmp = cur->next;
+	if (size == 1)
+	{
+		cur->next = NULL;
+	}
+	else
+	{
+		Guard->next = cur;
+		cur->next = tmp->next;
+	}
 	CSLTDataType ret = tmp->data;
 	free(tmp);
 	return ret;
