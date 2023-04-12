@@ -33,6 +33,7 @@ void STPush(ST* ps, STDataType x)
 			return;
 		}
 		ps->a = a;
+		ps->capacity *= 2;
 	}
 	ps->a[ps->top] = x;
 	ps->top++;

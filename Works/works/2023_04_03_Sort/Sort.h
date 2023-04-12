@@ -3,8 +3,11 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<stdbool.h>
+#include"Stack.h"
 
 void Swap(int* p1, int* p2);
+
+void InsertSort(int* a, int n);
 
 //—°‘Ò≈≈–Ú
 void SelectSort(int* a, int n);

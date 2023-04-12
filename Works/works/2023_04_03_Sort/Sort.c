@@ -148,7 +148,7 @@ void QuickSort1(int* a, int left, int right)
 	//这种key_i对于有序排序时间复杂度较高
 	//int key_i = left;
 
-	//随机选key_y,在一定程度上能解决问题
+	//随机选key_i,在一定程度上能解决问题
 	//int rand_i = left + (rand() % (right - left));
 	//Swap(&a[left], &a[rand_i]);
 
@@ -300,6 +300,74 @@ int PartSort3(int* a, int left, int right)
 	key_i = prev;
 	return key_i;
 }
+
+/*void QuickSort(int* a, int left, int right)
+{
+	if (left >= right)
+	{
+		return;
+	}
+	int key = PartSort3(a, left, right);
+	QuickSort(a, left, key - 1);
+	QuickSort(a, key + 1, right);
+}*/
+
+void InsertSort(int* a, int n)
+{
+	for (int i = 1; i < n; ++i)
+	{
+		int end = i - 1;
+		int tmp = a[i];
+
+		while (end >= 0)
+		{
+			if (tmp < a[end])
+			{
+				a[end + 1] = a[end];
+				--end;
+			}
+			else
+			{
+				break;
+			}
+		}
+		a[end + 1] = tmp;
+	}
+}
+
+/*void QuickSort(int* a, int left, int right)
+{
+	ST st;
+	STInit(&st);
+	STPush(&st, right);
+	STPush(&st, left);
+	while (!STEmpty(&st))
+	{
+		int begin = STTop(&st);
+		STPop(&st);
+		int end = STTop(&st);
+		STPop(&st);
+		if ((end - begin + 1) > 10)
+		{
+			int key_i = PartSort3(a, begin, end);
+			if (key_i + 1 < end)
+			{
+				STPush(&st, end);
+				STPush(&st, key_i + 1);
+			}
+			if (key_i - 1 > begin)
+			{
+				STPush(&st, key_i - 1);
+				STPush(&st, begin);
+			}
+		}
+		else
+		{
+			InsertSort(a + begin, end - begin + 1);
+		}
+	}
+	STDestroy(&st);
+}*/
 
 void QuickSort(int* a, int left, int right)
 {
