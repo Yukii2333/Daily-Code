@@ -101,3 +101,49 @@ void MergeSort(int* a, int n)
 		gap *= 2;
 	}
 }
+
+void CountingSort(int* a, int n)
+{
+	int max = a[0];
+	int min = a[0];
+	//找最大最小值
+	int i = 0;
+	for (i = 1; i < n; ++i)
+	{
+		if (a[i] > max)
+			max = a[i];
+		if (a[i] < min)
+			min = a[i];
+	}
+	int len = max - min + 1;
+	//创建计数数组
+	int* count = (int*)malloc(sizeof(int) * len);
+	if (count == NULL)
+	{
+		perror("malloc fail");
+		return;
+	}
+	//初始化数组
+	memset(count, 0, len*sizeof(int));
+	//进行计数
+	i = 0;
+	while (i < n)
+	{
+		count[a[i++] - min]++;
+	}
+	//覆盖回原数组
+	i = 0;
+	int j = 0;
+	while (i < len)
+	{
+		if (count[i] <= 0)
+			++i;
+		else
+		{
+			while (count[i]-- > 0)
+			{
+				a[j++] = i + min;
+			}
+		}
+	}
+}

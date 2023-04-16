@@ -10,3 +10,5 @@
 //πÈ≤¢≈≈–Ú
 void MergeSort(int* a, int n);
 void _MergeSort(int* a, int begin, int end, int* tmp);
+
+void CountingSort(int* a, int n);
