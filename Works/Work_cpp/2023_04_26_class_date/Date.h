@@ -11,6 +11,13 @@ public:
 		month_ = month;
 		day_ = day;
 	}
+	Date& operator=(const Date& d)
+	{
+		year_ = d.year_;
+		month_ = d.month_;
+		day_ = d.day_;
+		return (*this);
+	}
 	void Print()
 	{
 		std::cout << year_ << "-" << day_ << "-" << day_ << std::endl;
