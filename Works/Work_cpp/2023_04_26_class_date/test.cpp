@@ -8,13 +8,15 @@ void test()
 	Date d2(d1);
 	Date d3;
 	d3 = d2;
-	d2++;
-	++d3;
-	d2--;
-	--d3;
+	d2 += 996;
+	int day = d2 - d3;
+	std::cout << "d1:";
 	d1.Print();
+	std::cout << "d2:";
 	d2.Print();
+	std::cout << "d3:";
 	d3.Print();
+	std::cout <<"d2-d3:"<< day << std::endl;
 }
 
 int main()

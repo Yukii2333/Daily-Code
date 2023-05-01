@@ -107,3 +107,119 @@ Date Date::operator--(int)
 	--* this;
 	return tmp;
 }
+
+bool Date::operator>(const Date& d)
+{
+	if (year_ < d.year_)
+		return false;
+	else if (year_ > d.year_)
+		return true;
+	else
+	{
+		if (month_ < d.month_)
+			return false;
+		else if (month_ > d.month_)
+			return true;
+		else
+		{
+			if (day_ > d.day_)
+				return true;
+			else
+				return false;
+		}
+	}
+}
+
+bool Date::operator==(const Date& d)
+{
+	return year_ == d.year_ && 
+			day_ == d.day_ &&
+			month_ == d.month_;
+}
+
+bool Date::operator>=(const Date& d)
+{
+	return (*this == d) || (*this > d);
+}
+
+bool Date::operator<(const Date& d)
+{
+	return !(*this >= d);
+}
+
+bool Date::operator<=(const Date& d)
+{
+	return !(*this > d);
+}
+
+bool Date::operator!=(const Date& d)
+{
+	return !(*this == d);
+}
+
+int Date::GetMonthDay_sum(const Date& d)
+{
+	//int arr[13] = { 0,31,28,31,30,31,30,31,31,30,31,30,31 };
+	int arr[13] = { 0,0,31,59,90,120,151,181,212,243,273,304,334 };
+	if ((d.month_ >= 2) && ((d.year_ % 100 != 0 && d.year_ % 4 == 0) || (d.year_ % 400 == 0)))
+	{
+		return arr[d.month_] + 1 + d.day_;
+	}
+	return arr[d.month_] + d.day_;
+}
+
+int Date::operator-(const Date& d)
+{
+	if (year_ == d.year_)
+	{
+		return GetMonthDay_sum(*this) - GetMonthDay_sum(d);
+	}
+	int difr_y = abs(year_ - d.year_);
+	Date tmp = d;
+	if (year_ > d.year_)
+	{
+		tmp = *this;
+	}
+	int difr_d = 0;
+	while (difr_y--)
+	{
+		int day = GetMonthDay_sum(tmp);
+		tmp -= day;
+		difr_d += day;
+	}
+	difr_d += GetMonthDay_sum(tmp);
+	if(year_ > d.year_)
+		return difr_d - GetMonthDay_sum(d);
+	else 
+		return GetMonthDay_sum(*this) - difr_d;
+		
+
+	//if (year_ > d.year_)
+	//{
+	//	int difr_y = year_ - d.year_;
+	//	int difr_d = 0;
+	//	Date tmp = *this;
+	//	while (difr_y--)
+	//	{
+	//		int day = GetMonthDay_sum(tmp);
+	//		tmp -= day;
+	//		difr_d += day;
+	//	}
+	//	difr_d += GetMonthDay_sum(tmp);
+	//	return difr_d - GetMonthDay_sum(d);
+	//}
+	//else
+	//{
+	//	int difr_y = d.year_ - year_;
+	//	int difr_d = 0;
+	//	Date tmp = d;
+	//	while (difr_y--)
+	//	{
+	//		int day = GetMonthDay_sum(tmp);
+	//		tmp -= day;
+	//		difr_d += day;
+	//	}
+	//	difr_d += GetMonthDay_sum(tmp);
+	//	return GetMonthDay_sum(*this) - difr_d;
+	//}
+}
