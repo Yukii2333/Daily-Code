@@ -17,6 +17,8 @@ void test()
 	std::cout << "d3:";
 	d3.Print();
 	std::cout <<"d2-d3:"<< day << std::endl;
+	std::cin >> d3;
+	std::cout << d3 << std::endl;
 }
 
 int main()

@@ -1,17 +1,17 @@
 #pragma once
 
 #include<iostream>
+#include<assert.h>
 
 class Date
 {
+	//友元函数声名
+	friend std::ostream& operator<<(std::ostream& out, const Date& d);
+	friend std::istream& operator>>(std::istream& in, Date& d);
 public:
 	//全缺省构造函数
-	Date(int year = 1900, int month = 1, int day = 1)
-	{
-		year_ = year;
-		month_ = month;
-		day_ = day;
-	}
+	Date(int year = 1900, int month = 1, int day = 1);
+
 	Date& operator=(const Date& d);
 
 	//拷贝构造函数
@@ -22,9 +22,6 @@ public:
 	{
 
 	}
-
-	//获取某月天数
-	int GetMonthDay(int year, int month);
 
 	//日期+=天数
 	Date& operator+=(int day);
@@ -83,3 +80,12 @@ private:
 	int month_;
 	int day_;
 };
+
+//重载流提取
+std::ostream& operator<<(std::ostream& out, const Date& d);
+
+//重载流插入
+std::istream& operator>>(std::istream& in, Date& d);
+
+//获取某月天数
+int GetMonthDay(const int year, const int month);

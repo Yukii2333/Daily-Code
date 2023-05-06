@@ -1,6 +1,18 @@
 #define _CRT_SECURE_NO_WARNINGS 1
 #include"Date.h"
 
+Date::Date(int year, int month, int day)
+{
+	if ((month > 12 || month < 1) || (day < 1 || day > GetMonthDay(year, month)))
+	{
+		std::cout << "输入有误！" << std::endl;
+		assert(false);
+	}
+	year_ = year;
+	month_ = month;
+	day_ = day;
+}
+
 Date& Date::operator=(const Date& d)
 {
 	year_ = d.year_;
@@ -16,7 +28,7 @@ Date::Date(const Date& d)
 	day_ = d.day_;
 }
 
-int Date::GetMonthDay(int year, int month)
+int GetMonthDay(const int year, const int month)
 {
 	int arr[13] = { 0,31,28,31,30,31,30,31,31,30,31,30,31 };
 	if ((month == 2) && ((year % 100 != 0 && year % 4 == 0) || (year % 400 == 0)))
@@ -28,6 +40,10 @@ int Date::GetMonthDay(int year, int month)
 
 Date& Date::operator+=(int day)
 {
+	if (day < 0)
+	{
+		return *this -= (-1 * day);
+	}
 	day_ += day;
 	int tmp = GetMonthDay(year_, month_);
 	while (day_ > tmp)
@@ -53,6 +69,10 @@ Date Date::operator+(int day)
 
 Date& Date::operator-=(int day)
 {
+	if (day < 0)
+	{
+		return *this += (- 1 * day);
+	}
 	while (day>0)
 	{
 		if (day < day_)
@@ -222,4 +242,21 @@ int Date::operator-(const Date& d)
 	//	difr_d += GetMonthDay_sum(tmp);
 	//	return GetMonthDay_sum(*this) - difr_d;
 	//}
+}
+
+std::ostream& operator<<(std::ostream& out, const Date& d)
+{
+	out << d.year_ << "年" << d.month_ << "月" << d.day_ << "日";
+	return out;
+}
+
+std::istream& operator>>(std::istream& in, Date& d)
+{
+	in >> d.year_ >> d.month_ >> d.day_;
+	if ((d.month_ > 12 || d.month_ < 1) || (d.day_ < 1 || d.day_ > GetMonthDay(d.year_, d.month_)))
+	{
+		std::cout << "输入有误！" << std::endl;
+		assert(false);
+	}
+	return in;
 }
