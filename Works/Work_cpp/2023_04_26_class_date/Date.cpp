@@ -212,36 +212,6 @@ int Date::operator-(const Date& d)
 		return difr_d - GetMonthDay_sum(d);
 	else 
 		return GetMonthDay_sum(*this) - difr_d;
-		
-
-	//if (year_ > d.year_)
-	//{
-	//	int difr_y = year_ - d.year_;
-	//	int difr_d = 0;
-	//	Date tmp = *this;
-	//	while (difr_y--)
-	//	{
-	//		int day = GetMonthDay_sum(tmp);
-	//		tmp -= day;
-	//		difr_d += day;
-	//	}
-	//	difr_d += GetMonthDay_sum(tmp);
-	//	return difr_d - GetMonthDay_sum(d);
-	//}
-	//else
-	//{
-	//	int difr_y = d.year_ - year_;
-	//	int difr_d = 0;
-	//	Date tmp = d;
-	//	while (difr_y--)
-	//	{
-	//		int day = GetMonthDay_sum(tmp);
-	//		tmp -= day;
-	//		difr_d += day;
-	//	}
-	//	difr_d += GetMonthDay_sum(tmp);
-	//	return GetMonthDay_sum(*this) - difr_d;
-	//}
 }
 
 std::ostream& operator<<(std::ostream& out, const Date& d)
