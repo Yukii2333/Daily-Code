@@ -181,7 +181,7 @@ int Date::GetMonthDay_sum(const Date& d)
 {
 	//int arr[13] = { 0,31,28,31,30,31,30,31,31,30,31,30,31 };
 	int arr[13] = { 0,0,31,59,90,120,151,181,212,243,273,304,334 };
-	if ((d.month_ >= 2) && ((d.year_ % 100 != 0 && d.year_ % 4 == 0) || (d.year_ % 400 == 0)))
+	if ((d.month_ > 2) && ((d.year_ % 100 != 0 && d.year_ % 4 == 0) || (d.year_ % 400 == 0)))
 	{
 		return arr[d.month_] + 1 + d.day_;
 	}
