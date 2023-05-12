@@ -27,13 +27,13 @@ public:
 	Date& operator+=(int day);
 
 	//日期+天数
-	Date operator+(int day);
+	Date operator+(int day) const;
 
 	//日期-=天数
 	Date& operator-=(int day);
 
 	//日期-天数
-	Date operator-(int day);
+	Date operator-(int day) const;
 
 	//前置++
 	Date& operator++();
@@ -48,30 +48,35 @@ public:
 	Date operator--(int);
 
 	//大于>
-	bool operator>(const Date& d);
+	bool operator>(const Date& d) const;
 
 	//等于==
-	bool operator==(const Date& d);
+	bool operator==(const Date& d) const;
 
 	//大于等于>=
-	bool operator>=(const Date& d);
+	bool operator>=(const Date& d) const;
 
 	//小于<
-	bool operator<(const Date& d);
+	bool operator<(const Date& d) const;
 
 	//小于等于<=
-	bool operator<=(const Date& d);
+	bool operator<=(const Date& d) const;
 
 	//不等于!=
-	bool operator!=(const Date& d);
+	bool operator!=(const Date& d) const;
 
 	// 日期-日期 返回天数
-	int operator-(const Date& d);
+	int operator-(const Date& d) const;
+
+	Date* operator&();
+	const Date* operator&() const;
+
 
 	//获取该年年初到日期的总天数
-	int GetMonthDay_sum(const Date& d);
+	int GetMonthDay_sum(const Date& d) const;
 
-	void Print()
+
+	void Print() const
 	{
 		std::cout << year_ << "-" << month_ << "-" << day_ << std::endl;
 	}

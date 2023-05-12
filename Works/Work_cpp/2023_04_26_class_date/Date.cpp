@@ -60,7 +60,7 @@ Date& Date::operator+=(int day)
 	return *this;
 }
 
-Date Date::operator+(int day)
+Date Date::operator+(int day) const
 {
 	Date tmp = *this;
 	tmp += day;
@@ -95,7 +95,7 @@ Date& Date::operator-=(int day)
 	return *this;
 }
 
-Date Date::operator-(int day)
+Date Date::operator-(int day) const
 {
 	Date tmp = *this;
 	tmp -= day;
@@ -128,7 +128,7 @@ Date Date::operator--(int)
 	return tmp;
 }
 
-bool Date::operator>(const Date& d)
+bool Date::operator>(const Date& d) const
 {
 	if (year_ < d.year_)
 		return false;
@@ -150,34 +150,34 @@ bool Date::operator>(const Date& d)
 	}
 }
 
-bool Date::operator==(const Date& d)
+bool Date::operator==(const Date& d) const
 {
 	return year_ == d.year_ && 
 			day_ == d.day_ &&
 			month_ == d.month_;
 }
 
-bool Date::operator>=(const Date& d)
+bool Date::operator>=(const Date& d) const
 {
 	return (*this == d) || (*this > d);
 }
 
-bool Date::operator<(const Date& d)
+bool Date::operator<(const Date& d) const
 {
 	return !(*this >= d);
 }
 
-bool Date::operator<=(const Date& d)
+bool Date::operator<=(const Date& d) const
 {
 	return !(*this > d);
 }
 
-bool Date::operator!=(const Date& d)
+bool Date::operator!=(const Date& d) const
 {
 	return !(*this == d);
 }
 
-int Date::GetMonthDay_sum(const Date& d)
+int Date::GetMonthDay_sum(const Date& d) const
 {
 	int arr[13] = { 0,0,31,59,90,120,151,181,212,243,273,304,334 };
 	if ((d.month_ > 2) && ((d.year_ % 100 != 0 && d.year_ % 4 == 0) || (d.year_ % 400 == 0)))
@@ -187,7 +187,7 @@ int Date::GetMonthDay_sum(const Date& d)
 	return arr[d.month_] + d.day_;
 }
 
-int Date::operator-(const Date& d)
+int Date::operator-(const Date& d) const
 {
 	if (year_ == d.year_)
 	{
@@ -228,4 +228,14 @@ std::istream& operator>>(std::istream& in, Date& d)
 		assert(false);
 	}
 	return in;
+}
+
+Date* Date::operator&()
+{
+	return this;
+}
+
+const Date* Date::operator&() const
+{
+	return this;
 }
