@@ -12,5 +12,6 @@ int main()
 
 	string::reverse_iterator it2 = str.rbegin();
 
+
 	return 0;
 }
