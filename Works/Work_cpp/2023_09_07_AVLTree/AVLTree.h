@@ -99,9 +99,13 @@ public:
 				{
 					RotateR(parent);
 				}
-				else if (parent->bf_ == 2 && cur->bf_ - 1)
+				else if (parent->bf_ == 2 && cur->bf_ == -1)
 				{
 					RotateRL(parent);
+				}
+				else if (parent->bf_ == -2 && cur->bf_ == 1)
+				{
+					RotateLR(parent);
 				}
 				break;
 			}
@@ -162,6 +166,7 @@ public:
 		}
 
 		Node* pParent = parent->parent_;
+		parent->parent_ = cur;
 		cur->parent_ = pParent;
 		if (pParent)
 		{
@@ -185,34 +190,95 @@ public:
 	void RotateRL(Node* parent)
 	{
 		Node* cur = parent->right_;
-		int flag = cur->left_;
+		Node* curLeft = cur->left_;
+		int bf = curLeft->bf_;
 		RotateR(cur);
 		RotateL(parent);
-		if (flag == 1)
-		{
-			cur->bf_ = -1;
-		}
-		else if (flag == -1)
+		if (bf == -1)
 		{
 			cur->bf_ = 1;
+			parent->bf_ = 0;
+			curLeft->bf_ = 0;
+		}
+		else if (bf == 1)
+		{
+			cur->bf_ = 0;
+			parent->bf_ = -1;
+			curLeft->bf_ = 0;
+		}
+		else if (bf == 0)
+		{
+			cur->bf_ = 0;
+			parent->bf_ = 0;
+			curLeft->bf_ = 0;
 		}
 	}
 
 	void RotateLR(Node* parent)
 	{
 		Node* cur = parent->left_;
-		int flag = cur->right_;
+		Node* curRight = cur->right_;
+		int bf = curRight->bf_;
 		RotateL(cur);
 		RotateR(parent);
-		if (flag == 1)
+		if (bf == -1)
+		{
+			cur->bf_ = 0;
+			parent->bf_ = 1;
+			curRight->bf_ = 0;
+		}
+		else if (bf == 1)
 		{
 			cur->bf_ = -1;
+			parent->bf_ = 0;
+			curRight->bf_ = 0;
 		}
-		else if (flag == -1)
+		else if (bf == 0)
 		{
-			cur->bf_ = 1;
+			cur->bf_ = 0;
+			parent->bf_ = 0;
+			curRight->bf_ = 0;
 		}
 	}
+
+	int Hight()
+	{
+		return Hight(root_);
+	}
+	bool IsBalance()
+	{
+		return IsBalance(root_);
+	}
+
+private:
+	//求高度
+	int Hight(Node* root)
+	{
+		if (root == nullptr)
+		{
+			return 0;
+		}
+		int leftHight = Hight(root->left_);
+		int rightHight = Hight(root->right_);
+		return leftHight > rightHight ? leftHight + 1 : rightHight + 1;
+	}
+	//判断是否是AVL树
+	bool IsBalance(Node* root)
+	{
+		if (root == nullptr)
+		{
+			return true;
+		}
+		int leftHight = Hight(root->left_);
+		int rightHight = Hight(root->right_);
+		if ((rightHight - leftHight) != root->bf_)
+		{
+			std::cout << "平衡因子异常：" << "key:" << root->kv_.first << std::endl;
+			return false;
+		}
+		return IsBalance(root->left_) && IsBalance(root->right_);
+	}
+
 private:
 	Node* root_ = nullptr;
 };
