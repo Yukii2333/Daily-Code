@@ -2,20 +2,21 @@
 
 
 #include<iostream>
+#include<assert.h>
 
 template<class K, class V>
 struct AVLTreeNode
 {
 	typedef AVLTreeNode<K, V> Node;
 
-	pair<K, V> kv_;
+	std::pair<K, V> kv_;
 	AVLTreeNode<K, V>* left_;
 	AVLTreeNode<K, V>* right_;
 	AVLTreeNode<K, V>* parent_;
 	//Æ½ºâÒò×Ó
 	int bf_;
 
-	AVLTreeNode(const pair<K, V> kv)
+	AVLTreeNode(const std::pair<K, V> kv)
 		:kv_(kv)
 		,left_(nullptr)
 		,right_(nullptr)
@@ -31,7 +32,7 @@ class AVLTree
 public:
 	typedef AVLTreeNode<K, V> Node;
 
-	bool Insert(const pair<K, V>& kv)
+	bool Insert(const std::pair<K, V>& kv)
 	{
 		if (root_ == nullptr)
 		{
