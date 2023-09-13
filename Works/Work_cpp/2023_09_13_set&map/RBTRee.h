@@ -9,20 +9,19 @@ enum Colour
 	BLACK
 };
 
-template<class K, class V>
+template<class T>
 struct RBTreeNode
 {
-	typedef RBTreeNode<K, V> Node;
 
-	std::pair<K, V> kv_;
+	T data_;
 	Colour cor_;
-	RBTreeNode<K, V>* left_;
-	RBTreeNode<K, V>* right_;
-	RBTreeNode<K, V>* parent_;
+	RBTreeNode<T>* left_;
+	RBTreeNode<T>* right_;
+	RBTreeNode<T>* parent_;
 
 
-	RBTreeNode(const std::pair<K, V> kv)
-		:kv_(kv)
+	RBTreeNode(const T& data)
+		:data_(data)
 		,cor_(RED)
 		,left_(nullptr)
 		,right_(nullptr)
@@ -30,143 +29,201 @@ struct RBTreeNode
 	{}
 };
 
-template<class K, class V>
+template<class T>
+struct _RBTreeIterator
+{
+	typedef RBTreeNode<T> Node;
+	typedef _RBTreeIterator<T> Self;
+
+	Node* node_;
+
+	_RBTreeIterator(Node* node) :node_(node) {}
+
+	T& operator*()
+	{
+		return node_->data_;
+	}
+	T* operator->()
+	{
+		return &(node_->date_);
+	}
+	bool operator!=(const Self & s)
+	{
+		return node_ != s.node_;
+	}
+	Self& operator++()
+	{
+		if (node_->right_)
+		{
+			//右树存在时，下一个节点就是右树的最左节点
+			Node* nextNode = node_->right_;
+			while (nextNode->left_)
+			{
+				nextNode = nextNode->left_;
+			}
+			node_ = nextNode;
+		}
+		else
+		{
+			//右子树为空的情况下，下一个节点是cur为parent的左孩子时的parent
+			Node* cur = node_;
+			Node* parent = cur->parent_;
+			while (parent)
+			{
+				if (cur == parent->left_)
+				{
+					break;
+				}
+
+				else
+				{
+					cur = parent;
+					parent = cur->parent_;
+				}
+			}
+			node_ = parent;
+		}
+		return *this;
+	}
+	Self& operator--()
+	{
+		if (node_->left_)
+		{
+			//左子树存在时，上一个节点就是左子树的最右节点
+			Node* nextNode = node_;
+			while (nextNode->right_)
+			{
+				nextNode = nextNode->right_;
+			}
+			node_ = nextNode;
+		}
+		else
+		{
+			//左子树为空的情况下，下一个节点是cur为parent的右孩子时的parent
+			Node* cur = node_;
+			Node* parent = cur->parent_;
+			while (parent)
+			{
+				if (cur == parent->right_)
+				{
+					break;
+				}
+				else
+				{
+					cur = parent;
+					parent = cur->parent_;
+				}
+			}
+		}
+	}
+};
+
+template<class T>
+struct _RBTreeReverseIterator
+{
+	typedef RBTreeNode<T> Node;
+	typedef _RBTreeReverseIterator<T> Self;
+	typedef _RBTreeIterator<T> Iterator
+
+	Iterator it_;
+
+	T& operator*()
+	{
+		return *(it_);
+	}
+	T* operator->()
+	{
+		return &(operator*());
+	}
+	bool operator!=() 
+	{
+
+	}
+
+};
+
+//////////////////////////////////////////////////////////
+
+
+template<class K, class T, class keyOfT>
 class RBTree
 {
 public:
-	typedef RBTreeNode<K, V> Node;
+	typedef RBTreeNode<T> Node;
+	typedef _RBTreeIterator<T> iterator;
+	typedef _RBTreeIterator<const T> const_iterator;
 
-	//bool Insert(const std::pair<K, V>& kv)
-	//{
-	//	if (root_ == nullptr)
-	//	{
-	//		root_ = new Node(kv);
-	//		root_->cor_ = BLACK;
-	//		return true;
-	//	}
-	//	Node* cur = root_;
-	//	Node* parent = root_;
-	//	while (cur != nullptr)
-	//	{
-	//		parent = cur;
-	//		if (kv.first < cur->kv_.first)
-	//		{
-	//			cur = cur->left_;
-	//		}
-	//		else if (kv.first > cur->kv_.first)
-	//		{
-	//			cur = cur->right_;
-	//		}
-	//		else
-	//		{
-	//			return false;
-	//		}
-	//	}
+	iterator begin()
+	{
+		Node* farLeft = root_;
+		while (farLeft && farLeft->left_)
+		{
+			farLeft = farLeft->left_;
+		}
+		return iterator(farLeft);
+	}
+	iterator end()
+	{
+		return iterator(nullptr);
+	}
+	const_iterator begin() const
+	{
+		Node* farLeft = root_;
+		while (farLeft && farLeft->left_)
+		{
+			farLeft = farLeft->left_;
+		}
+		return iterator(farLeft);
+	}
+	const_iterator end() const
+	{
+		return iterator(nullptr);
+	}
 
-	//	cur = new Node(kv);
-	//	cur->cor_ = RED;
-	//	if (kv.first < parent->kv_.first)
-	//	{
-	//		parent->left_ = cur;
-	//	}
-	//	else
-	//	{
-	//		parent->right_ = cur;
-	//	}
-	//	cur->parent_ = parent;
 
-	//	//颜色更新
-	//	while(parent->parent_ && parent->cor_ != BLACK)
-	//	{
-	//		Node* grandparent = parent->parent_;
-	//		Node* uncle = nullptr;
-	//		if (grandparent)
-	//		{
-	//			if (grandparent->left_ == parent)
-	//				uncle = grandparent->right_;
+	Node* Find(const K& key) const
+	{
+		Node* cur = root_;
+		keyOfT kot;
+		while (cur)
+		{
+			if (kot(cur->data_) > key)
+			{
+				cur = cur->left_;
+			}
+			else if(kot(cur->data_) < key)
+			{
+				cur = cur->right_;
+			}
+			else
+			{
+				return cur;
+			}
+		}
+		return nullptr;
+	}
 
-	//			else
-	//				uncle = grandparent->left_;
-	//		}
-
-	//		if (uncle && uncle->cor_ == RED)
-	//		{
-	//			uncle->cor_ = parent->cor_ = BLACK;
-	//			grandparent->cor_ = RED;
-	//			cur = parent;
-	//			parent = cur->parent_;
-	//		}
-	//		else if (uncle == nullptr || uncle->cor_ == BLACK)
-	//		{
-	//			if (parent == grandparent->right_)
-	//			{
-	//				//g
-	//				//  p
-	//				//    c
-	//				if (cur == parent->right_)
-	//				{
-	//					RotateL(grandparent);
-	//					parent->cor_ = BLACK;
-	//					grandparent->cor_ = RED;
-	//				}
-	//				//g
-	//				//  p
-	//				//c
-	//				else
-	//				{
-	//					RotateRL(grandparent);
-	//					cur->cor_ = BLACK;
-	//					grandparent->cor_ = RED;
-	//				}
-	//			}
-	//			else
-	//			{
-	//				//    g
-	//				//  p
-	//				//c
-	//				if (cur == parent->left_)
-	//				{
-	//					RotateR(grandparent);
-	//					parent->cor_ = BLACK;
-	//					grandparent->cor_ = RED;
-	//				}
-	//				//    g
-	//				//  p
-	//				//    c
-	//				else
-	//				{
-	//					RotateLR(grandparent);
-	//					cur->cor_ = BLACK;
-	//					grandparent->cor_ = RED;
-	//				}
-	//			}
-	//			break;
-	//		}
-	//	}
-	//	if (parent->parent_ == nullptr)
-	//	{
-	//		parent->cor_ = BLACK;
-	//	}
-	//}
-
-	bool Insert(std::pair<K,V> kv)
+	bool Insert(const T& data)
 	{
 		if (root_ == nullptr)
 		{
-			root_ = new Node(kv);
+			root_ = new Node(data);
 			root_->cor_ = BLACK;
+
+			++size_;
 			return true;
 		}
 		Node* cur = root_;
 		Node* parent = root_;
+		keyOfT kot;
 		while (cur != nullptr)
 		{
 			parent = cur;
-			if (kv.first < cur->kv_.first)
+			if (kot(cur->data_) > kot(data))
 			{
 				cur = cur->left_;
 			}
-			else if (kv.first > cur->kv_.first)
+			else if (kot(cur->data_) < kot(data))
 			{
 				cur = cur->right_;
 			}
@@ -176,9 +233,11 @@ public:
 			}
 		}
 
-		cur = new Node(kv);
+		++size_;
+
+		cur = new Node(data);
 		cur->cor_ = RED;
-		if (kv.first < parent->kv_.first)
+		if (kot(data) < kot(parent->data_))
 		{
 			parent->left_ = cur;
 		}
@@ -199,10 +258,6 @@ public:
 				{
 					uncle->cor_ = parent->cor_ = BLACK;
 					grandparent->cor_ = RED;
-
-					//一次变色后，接着从grandparent的位置开始处理,而不是parent
-					// 若是parent开始处理会遇到grandparent为空但进行访问的情况
-					//况且三个节点都已经变色处理，从parent开始也没有意义
 					cur = grandparent;
 					parent = cur->parent_;
 				}
@@ -257,8 +312,6 @@ public:
 		root_->cor_= BLACK;
 		return true;
 	}
-	
-	//旋转
 	void RotateL(Node* parent)
 	{
 		Node* cur = parent->right_;
@@ -357,7 +410,6 @@ private:
 		}
 		return CheakColour(root, 0, benchmark);
 	}
-	//benchmark为基准值，每条路径上的黑色节点个数相同
 	bool CheakColour(Node* root, int blackNum, int benchmark)
 	{
 		if (root == nullptr)
@@ -379,7 +431,6 @@ private:
 		return CheakColour(root->left_, blackNum, benchmark)
 			&& CheakColour(root->right_, blackNum, benchmark);
 	}
-	//求高度
 	int Hight(Node* root)
 	{
 		if (root == nullptr)
@@ -390,9 +441,8 @@ private:
 		int rightHight = Hight(root->right_);
 		return leftHight > rightHight ? leftHight + 1 : rightHight + 1;
 	}
-
-
-
 private:
 	Node* root_ = nullptr;
+public:
+	size_t size_ = 0;
 };

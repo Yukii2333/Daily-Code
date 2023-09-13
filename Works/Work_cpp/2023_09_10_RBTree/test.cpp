@@ -1,17 +1,42 @@
 #define _CRT_SECURE_NO_WARNINGS 1
 
+using namespace std;
 #include"RBTRee.h"
 #include<iostream>
+#include<vector>
 
-using namespace std;
+
+
+//int main()
+//{
+//	RBTree<int, int> rb;
+//	for (int i = 0; i < 10; ++i)
+//	{
+//		rb.Insert(make_pair(rand(), i));
+//	}
+//	cout << rb.IsRBTree() << endl;
+//	return 0;
+//}
 
 int main()
 {
-	RBTree<int, int> rb;
-	for (int i = 0; i < 5000; ++i)
+	const int N = 10000000;
+	vector<int> v;
+	v.reserve(N);
+	srand(time(0));
+
+	for (size_t i = 0; i < N; i++)
 	{
-		rb.Insert(make_pair(rand(), i));
+		v.push_back(i);
 	}
-	cout << rb.IsRBTree() << endl;
+
+	RBTree<int, int> rbt;
+	for (auto e : v)
+	{
+		rbt.Insert(make_pair(e, e));
+	}
+	cout << rbt.IsBalance() << endl;
+
+
 	return 0;
 }
