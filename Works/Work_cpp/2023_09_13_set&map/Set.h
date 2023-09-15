@@ -1,7 +1,6 @@
 #pragma once
 
-#include<iostream>
-#include"RBTRee.h"
+#include"RBTree.h"
 
 namespace MyStd
 {
@@ -15,31 +14,25 @@ namespace MyStd
 				return key;
 			}
 		};
-		typedef typename RBTree<K, const K, SetKeyOfT>::const_iterator iterator;
-		typedef typename RBTree<K, const K, SetKeyOfT>::const_iterator const_iterator;
+		//不论是iterator还是const_iterator，都是const类型
+		typedef typename RBTree<K, K, SetKeyOfT>::const_iterator iterator;
+		typedef typename RBTree<K, K, SetKeyOfT>::const_iterator const_iterator;
 
 	public:
-		iterator begin() 
+		iterator begin() const
 		{
 			return t_.begin();
 		}
-		iterator end() 
+		iterator end() const
 		{
 			return t_.end();
 		}
-		const_iterator begin() const
+		std::pair<iterator, bool> Insert(const K& key)
 		{
-			return t_.begin();
-		}
-		const_iterator end() const
-		{
-			return t_.end();
-		}
-		bool Insert(const K& key)
-		{
-			return t_.Insert(key);
+			std::pair<typename RBTree<K, K, SetKeyOfT>::iterator, bool> ret = t_.Insert(key);
+			return std::pair<iterator, bool>(ret.first, ret.second);
 		}
 	private:
-		RBTree<K, const K, SetKeyOfT> t_;
+		RBTree<K, K, SetKeyOfT> t_;
 	};
 }

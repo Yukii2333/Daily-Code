@@ -1,7 +1,6 @@
 #pragma once
 
 #include<iostream>
-#include<assert.h>
 
 enum Colour
 {
@@ -29,27 +28,37 @@ struct RBTreeNode
 	{}
 };
 
-template<class T>
+template<class T, class Ptr, class Ref>
 struct _RBTreeIterator
 {
 	typedef RBTreeNode<T> Node;
-	typedef _RBTreeIterator<T> Self;
+	typedef _RBTreeIterator<T, Ptr, Ref> Self;
+
+	//不论参数如何，Iterator始终是普通迭代器
+	typedef _RBTreeIterator<T, T*, T&> Iterator;
 
 	Node* node_;
 
 	_RBTreeIterator(Node* node) :node_(node) {}
+	//当用it（普通迭代器）初始化const迭代器时，就是构造函数
+	//而初始化普通迭代器时，就是拷贝构造
+	_RBTreeIterator(const Iterator& it) :node_(it.node_) {};
 
-	T& operator*()
+	Ref operator*()
 	{
 		return node_->data_;
 	}
-	T* operator->()
+	Ptr operator->()
 	{
 		return &(node_->date_);
 	}
-	bool operator!=(const Self & s)
+	bool operator!=(const Self & s) const
 	{
 		return node_ != s.node_;
+	}
+	bool operator==(const Self& s) const
+	{
+		return node_ == s.node_;
 	}
 	Self& operator++()
 	{
@@ -114,44 +123,56 @@ struct _RBTreeIterator
 					parent = cur->parent_;
 				}
 			}
+			node_ = parent;
 		}
+		return *this;
 	}
 };
 
-template<class T>
-struct _RBTreeReverseIterator
-{
-	typedef RBTreeNode<T> Node;
-	typedef _RBTreeReverseIterator<T> Self;
-	typedef _RBTreeIterator<T> Iterator
+//template<class T, class Ptr, class Ref>
+//struct _RBTreeReverseIterator
+//{
+//	typedef RBTreeNode<Ref> Node;
+//	typedef typename _RBTreeIterator<T, Ptr, Ref> Iterator;
+//	typedef typename _RBTreeReverseIterator<T, Ptr, Ref> Self;
+//
+//	Iterator it_;
+//
+//	Ref operator*()
+//	{
+//		return *(it_);
+//	}
+//	Ptr operator->()
+//	{
+//		return &(operator*());
+//	}
+//	bool operator!=(const Self& s)
+//	{
+//		return it_.node_ != s.node_;
+//	}
+//	Self& operator++()
+//	{
+//		--it_;
+//		return *this;
+//	}
+//	Self& operator--()
+//	{
+//		++it_;
+//		return *this;
+//	}
+//};
 
-	Iterator it_;
-
-	T& operator*()
-	{
-		return *(it_);
-	}
-	T* operator->()
-	{
-		return &(operator*());
-	}
-	bool operator!=() 
-	{
-
-	}
-
-};
-
-//////////////////////////////////////////////////////////
 
 
 template<class K, class T, class keyOfT>
 class RBTree
 {
-public:
 	typedef RBTreeNode<T> Node;
-	typedef _RBTreeIterator<T> iterator;
-	typedef _RBTreeIterator<const T> const_iterator;
+public:
+	
+	typedef _RBTreeIterator<T, T*, T&> iterator;
+	typedef _RBTreeIterator<T, const T*, const T&> const_iterator;
+	//typedef _RBTreeReverseIterator< T, T*, T&> reverse_iterator;
 
 	iterator begin()
 	{
@@ -173,12 +194,13 @@ public:
 		{
 			farLeft = farLeft->left_;
 		}
-		return iterator(farLeft);
+		return const_iterator(farLeft);
 	}
 	const_iterator end() const
 	{
-		return iterator(nullptr);
+		return const_iterator(nullptr);
 	}
+
 
 
 	Node* Find(const K& key) const
@@ -203,7 +225,7 @@ public:
 		return nullptr;
 	}
 
-	bool Insert(const T& data)
+	std::pair<iterator, bool> Insert(const T& data)
 	{
 		if (root_ == nullptr)
 		{
@@ -211,7 +233,7 @@ public:
 			root_->cor_ = BLACK;
 
 			++size_;
-			return true;
+			return std::make_pair(iterator(root_), true);
 		}
 		Node* cur = root_;
 		Node* parent = root_;
@@ -229,13 +251,14 @@ public:
 			}
 			else
 			{
-				return false;
+				return std::make_pair(iterator(cur), false);
 			}
 		}
 
 		++size_;
 
-		cur = new Node(data);
+		Node* newnode = new Node(data);
+		cur = newnode;
 		cur->cor_ = RED;
 		if (kot(data) < kot(parent->data_))
 		{
@@ -310,7 +333,7 @@ public:
 			}
 		}
 		root_->cor_= BLACK;
-		return true;
+		return std::make_pair(iterator(newnode), true);
 	}
 	void RotateL(Node* parent)
 	{

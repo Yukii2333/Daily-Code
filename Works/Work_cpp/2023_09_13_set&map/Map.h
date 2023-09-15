@@ -1,7 +1,6 @@
 #pragma once
 
-#include<iostream>
-#include"RBTRee.h"
+#include"RBTree.h"
 
 
 namespace MyStd
@@ -35,9 +34,14 @@ namespace MyStd
 		{
 			return t_.end();
 		}
-		bool Insert(K& key, V& val)
+		V& operator[](const K& key)
 		{
-			return t_.Insert(std::make_pair(key, val));
+			std::pair<iterator, bool> ret = insert(std::make_pair(key, V()));
+			return ret.first->second;
+		}
+		std::pair<iterator,bool> Insert(const std::pair<K, V>& kv)
+		{
+			return t_.Insert(kv);
 		}
 	private:
 		

@@ -13,7 +13,7 @@ int main()
 	for (int i = 0; i < 10; ++i)
 	{
 		s.Insert(i);
-		m.Insert(i, i);
+		m.Insert(make_pair(i,i));
 	}
 	for (auto& e : s)
 	{
