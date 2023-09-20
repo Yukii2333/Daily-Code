@@ -16,26 +16,37 @@ namespace MySTL
 			}
 		};
 	public:
-		typedef typename hash_bucket::HashTable<K, std::pair<K, V>, KeyOfMap>::iterator iterator;
+		typedef typename hash_bucket::HashTable<K, std::pair<const K, V>, KeyOfMap>::iterator iterator;
+		typedef typename hash_bucket::HashTable<K, std::pair<const K, V>, KeyOfMap>::const_iterator const_iterator;
 
 		iterator begin()
 		{
-			return tb_.begin();
+			return ht_.begin();
 		}
 		iterator end()
 		{
-			return tb_.end();
+			return ht_.end();
+		}
+
+		const_iterator begin() const
+		{
+			return ht_.begin();
+		}
+		const_iterator end() const
+		{
+			return ht_.end();
 		}
 	public:
-		bool insert(const std::pair<K, V> kv)
+		std::pair<iterator, bool> insert(const std::pair<K, V> kv)
 		{
-			return tb_.Insert(kv);
+			return ht_.Insert(kv);
 		}
-		bool find(const std::pair<K, V> kv)
+		V& operator[](const K& key)
 		{
-			return tb_.Find(kv);
+			std::pair<iterator, bool> rt = insert(std::pair<K, V>(key, V()));
+			return rt.first->second;
 		}
 	private:
-		hash_bucket::HashTable<K, std::pair<K, V>, KeyOfMap> tb_;
+		hash_bucket::HashTable<K, std::pair<const K, V>, KeyOfMap> ht_;
 	};
 }

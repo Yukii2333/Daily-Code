@@ -16,27 +16,26 @@ namespace MySTL
 			}
 		};
 	public:
-		typedef typename hash_bucket::HashTable<K, K, KeyOfSet>::iterator iterator;
+		typedef typename hash_bucket::HashTable<K, K, KeyOfSet>::const_iterator iterator;
+		typedef typename hash_bucket::HashTable<K, K, KeyOfSet>::const_iterator const_iterator;
 
-		iterator begin()
+		iterator begin() const
 		{
-			return tb_.begin();
+			return ht_.begin();
 		}
-		iterator end()
+		iterator end() const
 		{
-			return tb_.end();
+			return ht_.end();
 		}
 	public:
-		bool insert(const K& key)
+		std::pair<const_iterator, bool> insert(const K & key)
 		{
-			return tb_.Insert(key);
+			std::pair<typename hash_bucket::HashTable<K, K, KeyOfSet>::iterator, bool> rt = ht_.Insert(key);
+			return std::make_pair(rt.first,rt.second);
 		}
-		bool erase(const K& key)
-		{
-			return tb_.Erase(key);
-		}
+
 	private:
 
-		hash_bucket::HashTable<K, K, KeyOfSet> tb_;
+		hash_bucket::HashTable<K, K, KeyOfSet> ht_;
 	};
 }

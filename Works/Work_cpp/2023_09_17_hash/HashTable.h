@@ -35,7 +35,7 @@ namespace hash_bucket
 	template<>
 	struct DefaultHashFunc<std::string>
 	{
-		size_t& operator()(const std::string& str)
+		size_t operator()(const std::string& str)
 		{
 			size_t key = 0;
 			for (auto e : str)
@@ -49,24 +49,27 @@ namespace hash_bucket
 	};
 
 	//迭代器封装
-	template<class K, class T, class KeyOfT, class HashFunc>
+	//template<class K, class T, class KeyOfT, class HashFunc>
+	template<class K, class T, class Ptr, class Ref, class KeyOfT, class HashFunc>
 	struct HashTableIterator
 	{
-		typedef HashTableIterator<K, T, KeyOfT, HashFunc> Self;
+		typedef HashTableIterator<K, T, Ptr, Ref, KeyOfT, HashFunc> Self;
+		typedef HashTableIterator<K, T, T*, T&, KeyOfT, HashFunc> Iterator;
 		typedef HashTable<K, T, KeyOfT, HashFunc> HashTable;
 		typedef DataNode<T> Node;
 
 		//节点的指针+哈希表的指针
 		Node* node_;
-		HashTable* ptb_;
+		const HashTable* ptb_;
 
-		HashTableIterator(Node* node, HashTable* ptb) :node_(node), ptb_(ptb) {};
+		HashTableIterator(Node* node, const HashTable* ptb) :node_(node), ptb_(ptb) {};
+		HashTableIterator(const Iterator& it) :node_(it.node_), ptb_(it.ptb_) {};
 
-		T& operator*()
+		Ref operator*()
 		{
 			return node_->data_;
 		}
-		T* operator->()
+		Ptr operator->()
 		{
 			return &node_->data_;
 		}
@@ -159,11 +162,14 @@ namespace hash_bucket
 	template<class K, class T, class KeyOfT, class HashFunc = DefaultHashFunc<K>>
 	class HashTable
 	{
-		friend struct HashTableIterator<K, T, KeyOfT, HashFunc>;
+		//友元声明
+		template<class K, class T, class Ptr, class Ref, class KeyOfT, class HashFunc>
+		friend struct HashTableIterator;
 
 		typedef DataNode<T> Node;
 	public:
-		typedef HashTableIterator<K, T, KeyOfT, HashFunc> iterator;
+		typedef HashTableIterator<K, T, T*, T&, KeyOfT, HashFunc> iterator;
+		typedef HashTableIterator<K, T, const T*, const T&, KeyOfT, HashFunc> const_iterator;
 
 		iterator begin()
 		{
@@ -182,6 +188,24 @@ namespace hash_bucket
 		iterator end()
 		{
 			return iterator(nullptr, this);
+		}
+
+		const_iterator begin() const
+		{
+			Node* cur = nullptr;
+			for (size_t i = 0; i < table_.size(); ++i)
+			{
+				cur = table_[i];
+				if (cur)
+				{
+					break;
+				}
+			}
+			return const_iterator(cur, this);
+		}
+		const_iterator end() const
+		{
+			return const_iterator(nullptr, this);
 		}
 
 	public:
@@ -206,15 +230,16 @@ namespace hash_bucket
 				}
 			}
 		}
-		bool Insert(const T& data)
+		std::pair<iterator,bool> Insert(const T& data)
 		{
 			//KeyOfT与HashFunc的仿函数
-			KeyOfT kot;
 			HashFunc hf;
+			KeyOfT kot;
 			//不能插入已有数据==>去重
-			if (Find(data))
+			iterator it = Find(kot(data));
+			if (it != end())
 			{
-				return false;
+				return std::make_pair(it, false);
 			}
 			//用size取模而不是capacity
 			//[]不允许访问大于size小于capacity之间的位置
@@ -271,24 +296,24 @@ namespace hash_bucket
 				std::swap(table_, newTable);
 
 			}
-			return true;
+			return std::make_pair(iterator(newnode, this), true);
 		}
-		Node* Find(const T& data)
+		iterator Find(const K& key)
 		{
 			KeyOfT kot;
 			HashFunc hf;
-			size_t key = hf(kot(data));
-			size_t hash_i = key % table_.size();
+			//对应桶在vector中的下标
+			size_t hash_i = hf(key) % table_.size();
 			Node* cur = table_[hash_i];
 			while (cur)
 			{
-				if (hf(kot(cur->data_)) == key)
+				if (kot(cur->data_) == key)
 				{
-					return cur;
+					return iterator(cur,this);
 				}
 				cur = cur->next_;
 			}
-			return nullptr;
+			return iterator(nullptr, this);
 		}
 		bool Erase(const T& data)
 		{

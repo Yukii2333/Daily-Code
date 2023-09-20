@@ -4,25 +4,19 @@
 #include<unordered_set>
 #include<unordered_map>
 //#include"HashTable.h"
-#include"UnorderedSet.h"
+//#include"UnorderedSet.h"
 #include"UnorderedMap.h"
 
 using namespace std;
 
 int main()
 {
-	MySTL::unordered_set<int> s1;
-	MySTL::unordered_map<int, int> m1;
-	for (size_t i = 0; i < 10; ++i)
-	{
-		s1.insert(rand());
-		m1.insert(make_pair(rand(), i));
-	}
 	MySTL::unordered_map<string, string> m2;
 	m2.insert(make_pair("sort", "排序"));
 	m2.insert(make_pair("left", "左"));
 	m2.insert(make_pair("right", "右"));
 	m2.insert(make_pair("quit", "结束"));
+	m2["ygyg"] = "一个一个";
 	for (auto& e : m2)
 	{
 		cout << e.first << ":" << e.second << endl;
