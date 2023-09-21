@@ -4,6 +4,102 @@
 #include<vector>
 #include<assert.h>
 
+//适配不同类型的参数，对于一般整形可能只是走个形式
+//但是负数之类的没有该仿函数将无法存储
+template<class K>
+struct DefaultHashFunc
+{
+	size_t operator()(const K& key)
+	{
+		return (size_t)key;
+	}
+};
+
+//模板对string类型的特化
+template<>
+struct DefaultHashFunc<std::string>
+{
+	size_t operator()(const std::string& str)
+	{
+		size_t key = 0;
+		for (auto e : str)
+		{
+			//BKDRhash算法，能极大程度降低字符串之间的冲突
+			key *= 131;
+			key += e;
+		}
+		return key;
+	}
+};
+
+//哈希表
+namespace hash_table
+{
+	enum STATE
+	{
+		EXIST,
+		EMPTY,
+		DELETE
+	};
+
+	template<class K, class V>
+	struct HashData
+	{
+		std::pair<K, V> kv_;
+		STATE state_ = EMPTY;
+	};
+
+	template<class K, class V, class HashFunc = DefaultHashFunc<K>>
+	class HashTable
+	{
+		void swap(HashTable& tb)
+		{
+			size_ = tb.size_;
+			std::swap(table_, tb.table_);
+		}
+
+	public:
+		HashTable()
+		{
+			table_.resize(10);
+		}
+
+		bool Insert(const std::pair<K, V>& kv)
+		{
+			//线性探测
+			HashFunc hf;
+			size_t hash_i = hf(kv_.first)%table_.size();
+			//找出表中从对应位置起，第一个元素为空或者删除位置
+			while (table_[hash_i].state_ != EXIST)
+			{
+				++hash_i;
+				hash_i %= table_.size();
+			}
+			table_[hash_i].kv_ = kv;
+			table_[hash_i].state_ = EMPTY;
+			++size_;
+			//根据负载因子扩容
+			double factor = (double)size_ / (double)table_.size();
+			if (factor >= 0.7)
+			{
+				HashTable<K,V,HashFunc> newTable;
+				newTable.table_.resize(table_.size() * 2);
+				for (size_t i = 0; i < table_.size(); ++i)
+				{
+					newTable.Insert(table_[i]);
+				}
+			}
+			return true;
+		}
+
+	private:
+		std::vector<HashData<K, V>> table_;
+		rsize_t size_ = 0;
+	};
+
+}
+
+//开散列哈希桶
 namespace hash_bucket
 {
 	//前置声明
@@ -20,33 +116,7 @@ namespace hash_bucket
 		DataNode(const T& data) :data_(data), next_(nullptr) {};
 	};
 
-	//适配不同类型的参数，对于一般整形可能只是走个形式
-	//但是负数之类的没有该仿函数将无法存储
-	template<class K>
-	struct DefaultHashFunc
-	{
-		size_t operator()(const K& key)
-		{
-			return (size_t)key;
-		}
-	};
 
-	//模板对string类型的特化
-	template<>
-	struct DefaultHashFunc<std::string>
-	{
-		size_t operator()(const std::string& str)
-		{
-			size_t key = 0;
-			for (auto e : str)
-			{
-				//BKDRhash算法，能极大程度降低字符串之间的冲突
-				key *= 131;
-				key += e;
-			}
-			return key;
-		}
-	};
 
 	//迭代器封装
 	//template<class K, class T, class KeyOfT, class HashFunc>
@@ -262,6 +332,7 @@ namespace hash_bucket
 			//	++size_;
 			//}
 
+			//扩容
 			//负载因子，一般控制在低于0,7~0.8
 			//负载因子越大，空间利用率越大，查找效率越低
 			//负载因子越小，空间利用率越低，查找效率越高
@@ -346,6 +417,7 @@ namespace hash_bucket
 				delete cur;
 			}
 			Print();
+			--size_;
 			return true;
 		}
 		void Print()
@@ -370,7 +442,7 @@ namespace hash_bucket
 
 	private:
 		//size_记录的是有效数据个数
-		size_t size_ = 0;
 		std::vector<Node*> table_;
+		size_t size_ = 0;
 	};
 }
