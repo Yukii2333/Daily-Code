@@ -33,7 +33,14 @@ namespace MySTL
 			std::pair<typename hash_bucket::HashTable<K, K, KeyOfSet>::iterator, bool> rt = ht_.Insert(key);
 			return std::make_pair(rt.first,rt.second);
 		}
-
+		iterator find(const K& key)
+		{
+			return ht_.Find(key);
+		}
+		rsize_t size()
+		{
+			return ht_.size();
+		}
 	private:
 
 		hash_bucket::HashTable<K, K, KeyOfSet> ht_;

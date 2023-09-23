@@ -46,6 +46,19 @@ namespace MySTL
 			std::pair<iterator, bool> rt = insert(std::pair<K, V>(key, V()));
 			return rt.first->second;
 		}
+		const V& operator[](const K& key) const
+		{
+			std::pair<iterator, bool> rt = insert(std::pair<K, V>(key, V()));
+			return rt.first->second;
+		}
+		iterator find(const K& key)
+		{
+			return ht_.Find(key);
+		}
+		rsize_t size()
+		{
+			return ht_.size();
+		}
 	private:
 		hash_bucket::HashTable<K, std::pair<const K, V>, KeyOfMap> ht_;
 	};

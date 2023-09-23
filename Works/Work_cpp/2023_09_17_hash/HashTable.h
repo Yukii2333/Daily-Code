@@ -68,15 +68,19 @@ namespace hash_table
 		{
 			//线性探测
 			HashFunc hf;
-			size_t hash_i = hf(kv_.first)%table_.size();
+			size_t hash_i = hf(kv.first)%table_.size();
+			if (Find(kv.first))
+			{
+				return false;
+			}
 			//找出表中从对应位置起，第一个元素为空或者删除位置
-			while (table_[hash_i].state_ != EXIST)
+			while (table_[hash_i].state_ == EXIST)
 			{
 				++hash_i;
 				hash_i %= table_.size();
 			}
 			table_[hash_i].kv_ = kv;
-			table_[hash_i].state_ = EMPTY;
+			table_[hash_i].state_ = EXIST;
 			++size_;
 			//根据负载因子扩容
 			double factor = (double)size_ / (double)table_.size();
@@ -86,7 +90,63 @@ namespace hash_table
 				newTable.table_.resize(table_.size() * 2);
 				for (size_t i = 0; i < table_.size(); ++i)
 				{
-					newTable.Insert(table_[i]);
+					if (table_[i].state_ == EXIST)
+					{
+						newTable.Insert(table_[i].kv_);
+					}
+				}
+				swap(newTable);
+			}
+			return true;
+		}
+		bool Find(const K& key)
+		{
+			HashFunc hf;
+			rsize_t hash_i = hf(key) % table_.size();
+			while (table_[hash_i].state_ == EXIST)
+			{
+				if (table_[hash_i].kv_.first == key)
+				{
+					return true;
+				}
+				else
+				{
+					++hash_i;
+					hash_i %= table_.size();
+				}
+			}
+			return false;
+		}
+		void Print()
+		{
+			for (auto& e : table_)
+			{
+				if (e.state_ == EXIST)
+				{
+					std::cout << e.kv_.first << " " << e.kv_.second << std::endl;
+				}
+			}
+		}
+		size_t Size()
+		{
+			return size_;
+		}
+		bool Erase(const K& key)
+		{
+			HashFunc hf;
+			rsize_t hash_i = hf(key) % table_.size();
+			while (table_[hash_i].state_ == EXIST)
+			{
+				if (table_[hash_i].kv_.first == key)
+				{
+					table_[hash_i].state_ = DELETE;
+					--size_;
+					return true;
+				}
+				else
+				{
+					++hash_i;
+					hash_i %= table_.size();
 				}
 			}
 			return true;
@@ -419,6 +479,10 @@ namespace hash_bucket
 			Print();
 			--size_;
 			return true;
+		}
+		size_t size()
+		{
+			return size;
 		}
 		void Print()
 		{

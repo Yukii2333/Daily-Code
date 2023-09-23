@@ -3,8 +3,8 @@
 #include<time.h>
 #include<unordered_set>
 #include<unordered_map>
-//#include"HashTable.h"
-//#include"UnorderedSet.h"
+#include"HashTable.h"
+#include"UnorderedSet.h"
 #include"UnorderedMap.h"
 
 using namespace std;
@@ -21,8 +21,31 @@ int main()
 	{
 		cout << e.first << ":" << e.second << endl;
 	}
+	cout << endl;
+	MySTL::unordered_set<string> s;
+	s.insert("sort");
+	s.insert("quit");
+	s.insert("hash");
+	s.insert("exist");
+	s.insert("delete");
+	for (auto& e : s)
+	{
+		cout << e << endl;
+	}
 	return 0;
 }
+
+//int main()
+//{
+//	hash_table::HashTable<string, string> t;
+//	t.Insert(make_pair("sort", "ÅÅĞò"));
+//	t.Insert(make_pair("quit", "ÍË³ö"));
+//	t.Insert(make_pair("hash", "¹şÏ£"));
+//	t.Insert(make_pair("test", "²âÊÔ"));
+//	t.Insert(make_pair("hash_", "¹şÏ£"));
+//	t.Print();
+//	return 0;
+//}
 
 //int main()
 //{
