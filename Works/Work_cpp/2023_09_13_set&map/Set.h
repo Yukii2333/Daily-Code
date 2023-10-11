@@ -29,6 +29,9 @@ namespace MyStd
 		}
 		std::pair<iterator, bool> Insert(const K& key)
 		{
+			//Insert的返回类型是普通类型的iterator，而set中的iterator是const类型，不能直接接收
+			//先用一个普通的类型接受后
+			//再用普通类型去构建const类型（此处需要迭代器添加一个构造函数）
 			std::pair<typename RBTree<K, K, SetKeyOfT>::iterator, bool> ret = t_.Insert(key);
 			return std::pair<iterator, bool>(ret.first, ret.second);
 		}

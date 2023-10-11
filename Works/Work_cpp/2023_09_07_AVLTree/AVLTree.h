@@ -14,6 +14,7 @@ struct AVLTreeNode
 	AVLTreeNode<K, V>* right_;
 	AVLTreeNode<K, V>* parent_;
 	//平衡因子
+	//右子树高度-左子树高度
 	int bf_;
 
 	AVLTreeNode(const std::pair<K, V> kv)
@@ -23,7 +24,6 @@ struct AVLTreeNode
 		,parent_(nullptr)
 		,bf_(0)
 	{}
-	
 };
 
 template<class K, class V>
